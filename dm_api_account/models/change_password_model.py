@@ -1,13 +1,24 @@
-from pydantic import BaseModel, StrictStr, Field
+from pydantic import BaseModel, StrictStr, Field, Extra
+from typing import Optional
+from uuid import UUID
 
-#change_password_model = {
-#            "login": "cillum culpa labore ullamco",
-#            "token": "c3ff00bb-76f4-5c6b-5438-32a3ec94cbd1",
-#            "oldPassword": "occaecat",
-#            "newPassword": "Excepteur cupidatat id"
-#        }
-class ChangePasswordModel(BaseModel):
-    login: StrictStr
-    token: StrictStr
-    old_password: StrictStr = Field(alias="oldPassword")
-    new_password: StrictStr = Field(alias="newPassword")
+
+class ChangePassword(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    login: Optional[StrictStr] = Field(None, description='User login')
+    token: Optional[UUID] = Field(None, description='Password reset token')
+    old_password: Optional[StrictStr] = Field(
+        None, alias='oldPassword', description='Old password'
+    )
+    new_password: Optional[StrictStr] = Field(
+        None, alias='newPassword', description='New password'
+    )
+
+
+# class ChangePasswordModel(BaseModel):
+#     login: StrictStr
+#     token: StrictStr
+#     old_password: StrictStr = Field(alias="oldPassword")
+#     new_password: StrictStr = Field(alias="newPassword")

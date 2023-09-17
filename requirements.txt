@@ -4,3 +4,4 @@ structlog
 uuid
 curlify
 pydantic
+pyhamcrest

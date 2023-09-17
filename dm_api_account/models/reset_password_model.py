@@ -1,9 +1,15 @@
-from pydantic import BaseModel, StrictStr
+from pydantic import BaseModel, StrictStr, Extra, Field
+from typing import Optional
 
-#reset_password_model = {
-#    "login": "nostrud exercitation laborum c",
-#    "email": "adipisicing"
-#}
-class ResetPasswordModel(BaseModel):
-    login: StrictStr
-    email: StrictStr
+
+# class ResetPasswordModel(BaseModel):
+#     login: StrictStr
+#     email: StrictStr
+
+
+class ResetPassword(BaseModel):
+    class Config:
+        extra = Extra.forbid
+
+    login: Optional[StrictStr] = Field(None, description='Login')
+    email: Optional[StrictStr] = Field(None, description='Email')

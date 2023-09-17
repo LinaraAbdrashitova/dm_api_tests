@@ -1,13 +1,11 @@
 import requests
+from pydantic import BaseModel
 from requests import Response
-from ..models.registration_model import RegistrationModel
-from ..models.reset_password_model import ResetPasswordModel
-from ..models.change_password_model import ChangePasswordModel
-from ..models.change_email_model import ChangeEmailModel
+from ..models import *
 from requests import session
 from restclient.restclient import Restclient
-from dm_api_account.models.user_envelope_model import UserEnvelopeModel
-from dm_api_account.models.user_details_envelope_model import UserDetailsEnvelopeModel
+from ..utilities import validate_request_json, validate_status_code
+
 
 class AccountApi:
     def __init__(self, host, headers=None):
@@ -16,22 +14,33 @@ class AccountApi:
         if headers:
             self.client.session.headers.update(headers)
 
-    def post_v1_account(self, json: RegistrationModel, **kwargs) -> Response:
+    def post_v1_account(
+            self,
+            json: Registration,
+            status_code: int = 201,
+            **kwargs
+    ) -> Response:
         """
         Register new user
+        :param status_code:
         :param json registration_model
         :return:
         """
 
         response = self.client.post(
             path=f"/v1/account",
-            json=json.model_dump(by_alias=True, exclude_none=True),
+            json=validate_request_json(json),
             **kwargs
         )
-
+        validate_status_code(response, status_code)
         return response
 
-    def post_v1_account_password(self, json: ResetPasswordModel, **kwargs) -> Response:
+    def post_v1_account_password(
+            self,
+            json: ResetPassword,
+            status_code: int = 200,
+            **kwargs
+    ) -> Response | UserEnvelope:
         """
         Reset registered user password
         :param json reset_password_model
@@ -40,13 +49,20 @@ class AccountApi:
 
         response = self.client.post(
             path=f"/v1/account/password",
-            json=json.model_dump(by_alias=True, exclude_none=True),
+            json=validate_request_json(json),
             **kwargs
         )
-        UserEnvelopeModel(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def put_v1_account_email(self, json: ChangeEmailModel, **kwargs) -> Response:
+    def put_v1_account_email(
+            self,
+            json: ChangeEmail,
+            status_code: int = 200,
+            **kwargs
+    ) -> Response | UserEnvelope:
         """
         Change registered user email
         :param json change_email_model
@@ -55,13 +71,20 @@ class AccountApi:
 
         response = self.client.put(
             path=f"/v1/account/email",
-            json=json.model_dump(by_alias=True, exclude_none=True),
+            json=validate_request_json(json),
             **kwargs
         )
-        UserEnvelopeModel(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def put_v1_account_password(self, json: ChangePasswordModel, **kwargs) -> Response:
+    def put_v1_account_password(
+            self,
+            json: ChangePassword,
+            status_code: int = 200,
+            **kwargs
+    ) -> Response | UserEnvelope:
         """
         Change registered user password
         :param json change_password_model
@@ -70,13 +93,20 @@ class AccountApi:
 
         response = self.client.put(
             path=f"/v1/account/password",
-            json=json.model_dump(by_alias=True, exclude_none=True),
+            json=validate_request_json(json),
             **kwargs
         )
-        UserEnvelopeModel(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def put_v1_account_token(self, token, **kwargs) -> Response:
+    def put_v1_account_token(
+            self,
+            token,
+            status_code: int = 200,
+            **kwargs
+    ) -> Response | UserEnvelope:
         """
         Activate register user
         :return:
@@ -86,10 +116,16 @@ class AccountApi:
             path=f"/v1/account/{token}",
             **kwargs
         )
-        UserEnvelopeModel(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserEnvelope(**response.json())
         return response
 
-    def get_v1_account(self, **kwargs) -> Response:
+    def get_v1_account(
+            self,
+            status_code: int = 200,
+            **kwargs
+    ) -> Response | UserDetailsEnvelope:
         """
         Get current user
         :return:
@@ -99,5 +135,7 @@ class AccountApi:
             path=f"/v1/account",
             **kwargs
         )
-        UserDetailsEnvelopeModel(**response.json())
+        validate_status_code(response, status_code)
+        if response.status_code == 200:
+            return UserDetailsEnvelope(**response.json())
         return response
