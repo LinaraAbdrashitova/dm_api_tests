@@ -41,6 +41,7 @@ class AccountApi:
             status_code: int = 200,
             **kwargs
     ) -> Response | UserEnvelope:
+
         """
         Reset registered user password
         :param json reset_password_model
@@ -52,6 +53,7 @@ class AccountApi:
             json=validate_request_json(json),
             **kwargs
         )
+
         validate_status_code(response, status_code)
         if response.status_code == 200:
             return UserEnvelope(**response.json())
@@ -63,6 +65,7 @@ class AccountApi:
             status_code: int = 200,
             **kwargs
     ) -> Response | UserEnvelope:
+
         """
         Change registered user email
         :param json change_email_model
@@ -74,6 +77,7 @@ class AccountApi:
             json=validate_request_json(json),
             **kwargs
         )
+
         validate_status_code(response, status_code)
         if response.status_code == 200:
             return UserEnvelope(**response.json())
@@ -85,6 +89,7 @@ class AccountApi:
             status_code: int = 200,
             **kwargs
     ) -> Response | UserEnvelope:
+
         """
         Change registered user password
         :param json change_password_model
@@ -96,9 +101,10 @@ class AccountApi:
             json=validate_request_json(json),
             **kwargs
         )
+
         validate_status_code(response, status_code)
         if response.status_code == 200:
-            return UserEnvelope(**response.json())
+            UserEnvelope(**response.json())
         return response
 
     def put_v1_account_token(
@@ -107,6 +113,7 @@ class AccountApi:
             status_code: int = 200,
             **kwargs
     ) -> Response | UserEnvelope:
+
         """
         Activate register user
         :return:
@@ -116,6 +123,7 @@ class AccountApi:
             path=f"/v1/account/{token}",
             **kwargs
         )
+
         validate_status_code(response, status_code)
         if response.status_code == 200:
             return UserEnvelope(**response.json())
@@ -126,6 +134,7 @@ class AccountApi:
             status_code: int = 200,
             **kwargs
     ) -> Response | UserDetailsEnvelope:
+
         """
         Get current user
         :return:
@@ -135,6 +144,7 @@ class AccountApi:
             path=f"/v1/account",
             **kwargs
         )
+
         validate_status_code(response, status_code)
         if response.status_code == 200:
             return UserDetailsEnvelope(**response.json())
