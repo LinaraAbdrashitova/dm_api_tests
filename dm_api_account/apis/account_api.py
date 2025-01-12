@@ -38,3 +38,58 @@ class AccountApi:
             url=f'{self.host}/v1/account/{token}'
         )
         return response
+
+    def get_v1_account(
+            self
+            ):
+        """
+        Get current user
+        :return:
+        """
+        ...
+
+    def post_v1_account_password(
+            self,
+            json_data
+            ):
+        """
+        Reset registered user password
+        :param json_data:
+        :return:
+        """
+
+        response = requests.post(
+            url=f'{self.host}/v1/account/password',
+            json=json_data
+        )
+        return response
+
+    def put_v1_account_password(
+            self,
+            json_data
+            ):
+        """
+        Change registered user password
+        :return:
+        """
+
+        response = requests.put(
+            url=f'{self.host}/v1/account/password',
+            json=json_data
+        )
+        return response
+
+    def put_v1_account_email(
+            self,
+            json_data
+            ):
+        """
+        Change registered user email
+        :return:
+        """
+
+        response = requests.put(
+            url=f'{self.host}/v1/account/email',
+            json=json_data
+        )
+        return response
