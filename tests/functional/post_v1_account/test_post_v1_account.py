@@ -24,7 +24,7 @@ def test_post_v1_account():
     account_api = AccountApi(configuration=dm_api_configuration)
     login_api = LoginApi(configuration=dm_api_configuration)
     mailhog_api = MailhogApi(configuration=mailhog_configuration)
-    login = 'linara21'
+    login = 'linara22'
     email = f'{login}@mail.ru'
     password = '123456789'
     json_data = {
