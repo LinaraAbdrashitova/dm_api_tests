@@ -4,12 +4,20 @@ from requests import session
 import structlog
 import uuid
 import curlify
+
+from restclient.configuration import Configuration
+
+
 class RestClient:
-    def __init__(self, host, headers=None):
-        self.host = host
-        self.headers = headers
+    def __init__(
+            self,
+            configuration: Configuration
+    ):
+        self.host = configuration.host
+        self.headers = configuration.headers
+        self.disable_log = configuration.disable_log
         self.session = session()
-        self.log = structlog.get_logger(__name__).bind(service='api') #в качестве названия логера берем название класса
+        self.log = structlog.get_logger(__name__).bind(service='api')  # в качестве названия логера берем название класса
 
     def post(
             self,
@@ -39,11 +47,19 @@ class RestClient:
     ):
         return self._send_request(method='DELETE', path=path, **kwargs)
 
-
-    #метод, который логирует запросы
-    def _send_request(self, method, path, **kwargs):
+    # метод, который логирует запросы
+    def _send_request(
+            self,
+            method,
+            path,
+            **kwargs
+            ):
         log = self.log.bind(event_id=str(uuid.uuid4()))
         full_url = self.host + path
+
+        if self.disable_log:
+            rest_response = self.session.request(method=method, url=full_url, **kwargs)
+            return rest_response
 
         log.msg(
             event='Request',
