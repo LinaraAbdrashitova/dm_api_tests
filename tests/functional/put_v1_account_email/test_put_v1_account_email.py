@@ -22,19 +22,12 @@ def test_put_v1_account_email():
     account = DMApiAccount(configuration=dm_api_configuration)
     mailhog = MailHogApi(configuration=mailhog_configuration)
     account_helper = AccountHelper(dm_account_api=account, mailhog=mailhog)
-    login = 'linara41'
+    login = 'linara54'
     email = f'{login}@mail.ru'
     password = '123456789'
     account_helper.register_new_user(login=login, password=password, email=email)
-    account_helper.user_login(login=login,password=password)
-
-    #Меняем емейл
-    json_data = {
-        'login': login,
-        'password': password,
-        'email': 'new_' + email,
-    }
-    response = account_helper.dm_account_api.account_api.put_v1_account_email(json_data=json_data)
+    account_helper.user_login(login=login, password=password)
+    account_helper.change_email(login=login, password=password, email='new_'+email)
 
     # Пытаемся войти, получаем 403
     json_data = {
@@ -46,14 +39,10 @@ def test_put_v1_account_email():
     assert response.status_code == 403, "Пользователь авторизован"
 
 
-    # На почте находим токен по новому емейлу для подтверждения смены емейла
-    response = account_helper.mailhog.mailhog_api.get_api_v2_messages()
-    assert response.status_code == 200, "Письма не были получены"
-    token = account_helper.get_activation_token_by_login(login=login, response=response)
+    token = account_helper.get_activation_token_by_login(login=login)
     assert token is not None, f"Токен для пользователя {login} не был получен"
     # Активируем этот токен
-    response = account_helper.dm_account_api.account_api.put_v1_account_token(token=token)
-    assert response.status_code == 200, "Пользователь не был активирован"
+    account_helper.activation_token(token=token)
     # Логинимся
     account_helper.user_login(login=login, password=password)
 
