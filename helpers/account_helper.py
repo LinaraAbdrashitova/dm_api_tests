@@ -81,6 +81,7 @@ class AccountHelper:
     def get_user(self):
         response = self.dm_account_api.account_api.get_v1_account()
         return response
+
     def user_login(
             self,
             login: str,

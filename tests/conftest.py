@@ -1,6 +1,6 @@
 from collections import namedtuple
 from datetime import datetime
-
+import time
 import pytest
 
 from helpers.account_helper import AccountHelper
@@ -42,7 +42,7 @@ def account_helper(account_api, mailhog_api):
 
 
 @pytest.fixture(scope='session')
-def auth_account_helper(mailhog_api, prepare_user):
+def auth_account_helper(mailhog_api):
     # dm_api_configuration = DmApiConfiguration(host='http://5.63.153.31:5051', disable_log=False)
     # account = DMApiAccount(configuration=dm_api_configuration)
     # account_helper = AccountHelper(dm_account_api=account, mailhog=mailhog_api)
@@ -73,6 +73,7 @@ def auth_account_helper(mailhog_api, prepare_user):
 
 @pytest.fixture
 def prepare_user():
+    time.sleep(1)
     now = datetime.now()
     data = now.strftime("%d_%m_%Y_%H_%M_%S")
     login = f'linara_{data}'
