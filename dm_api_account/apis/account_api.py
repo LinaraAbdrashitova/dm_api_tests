@@ -1,5 +1,3 @@
-import requests
-
 from restclient.client import RestClient
 
 
@@ -34,18 +32,18 @@ class AccountApi(RestClient):
         )
         return response
 
-    def get_v1_account(
-            self
-            ):
+    def get_v1_account(self, **kwargs):
         """
         Get current user
         :return:
         """
-        ...
+        response = self.get(path=f"/v1/account", **kwargs)
+        return response
 
     def post_v1_account_password(
             self,
-            json_data
+            json_data,
+            **kwargs
             ):
         """
         Reset registered user password
@@ -55,7 +53,8 @@ class AccountApi(RestClient):
 
         response = self.post(
             path='/v1/account/password',
-            json=json_data
+            json=json_data,
+            **kwargs
         )
         return response
 
