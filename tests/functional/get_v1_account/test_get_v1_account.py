@@ -1,10 +1,10 @@
 from datetime import datetime
-
 from hamcrest import assert_that, has_property, starts_with, all_of, instance_of, has_properties, equal_to
+
+from checkers.http_checkers import check_status_code_http
 
 
 def test_get_v1_account_auth(auth_account_helper):
-
     response = auth_account_helper.get_user()
 
     assert_that(response, all_of(
@@ -24,9 +24,10 @@ def test_get_v1_account_auth(auth_account_helper):
                 )
 
             ))
-        )
     )
+                )
 
 
 def test_get_v1_account_no_auth(account_helper):
-    account_helper.get_user(validate_response=False)
+    with check_status_code_http(401, "User must be authenticated!"):
+        account_helper.get_user()
